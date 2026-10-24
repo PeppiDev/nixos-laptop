@@ -7,6 +7,9 @@
     ./hardware-configuration.nix
     ../../modules/base.nix
     ../../modules/btrfs.nix
+    ../../modules/desktop.nix
+    ../../modules/apps.nix
+    ../../modules/stylix.nix
   ];
 
   networking.hostName = "nixos-vm";
