@@ -166,5 +166,12 @@
     };
   };
 
-  programs.bash.enable = true;
+  programs.bash = {
+    enable = true;
+    shellAliases = {
+      # Aplicar cambios del repo / actualizar todo el sistema
+      rebuild = "sudo nixos-rebuild switch --impure --flake ${osConfig.tema.flake}";
+      actualizar = "nix flake update --flake ~/nixos-config && sudo nixos-rebuild switch --impure --flake ${osConfig.tema.flake}";
+    };
+  };
 }

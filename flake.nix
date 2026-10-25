@@ -9,18 +9,20 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
+
     stylix = {
       url = "github:nix-community/stylix/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, stylix, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, stylix, nixos-hardware, ... }@inputs:
     let
-      mkHost = name: nixpkgs.lib.nixosSystem {
+      mkHost = name: extra: nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
-        modules = [
+        modules = extra ++ [
           ./hosts/${name}
           home-manager.nixosModules.home-manager
           stylix.nixosModules.stylix
@@ -37,7 +39,8 @@
     in
     {
       nixosConfigurations = {
-        vm = mkHost "vm";
+        vm = mkHost "vm" [ ];
+        laptop = mkHost "laptop" [ nixos-hardware.nixosModules.lenovo-thinkpad-e14-intel-gen4 ];
       };
     };
 }
