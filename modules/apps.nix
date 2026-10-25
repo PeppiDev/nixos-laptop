@@ -6,6 +6,7 @@
     brave
     obsidian
     moonlight-qt
+    fastfetch
   ];
 
   services.tailscale.enable = true;

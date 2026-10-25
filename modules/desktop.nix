@@ -1,11 +1,55 @@
 # Escritorio: niri + ReGreet (greetd), audio, bluetooth, fuentes, portales.
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   programs.niri.enable = true;
 
   # Pantalla de login gráfica sobre greetd; Stylix la tematiza
-  programs.regreet.enable = true;
+  programs.regreet = {
+    enable = true;
+    settings = {
+      appearance.greeting_msg = "Hola, peppi";
+      # Misma pintura pero con las manos arriba, para que la tarjeta no tape los dedos
+      background.path = lib.mkForce ../wallpapers/creacion-adan-ascii-login.png;
+      # Numérico: el greeter no corre con locale español
+      widget.clock = {
+        format = "%H:%M   ·   %d/%m/%Y";
+        label_width = 320;
+      };
+    };
+  };
+
+  # Tarjeta de login translúcida sobre el fondo ASCII (se suma al CSS de Stylix)
+  stylix.targets.regreet.extraCss =
+    let
+      c = config.lib.stylix.colors.withHashtag;
+    in
+    ''
+      window frame {
+        background-color: alpha(${c.base00}, 0.80);
+        border: 1px solid ${c.base02};
+        border-radius: 18px;
+        padding: 18px;
+      }
+      entry, dropdown button, combobox button {
+        border-radius: 10px;
+      }
+      button.suggested-action {
+        border-radius: 10px;
+        background: ${c.base0D};
+        color: ${c.base00};
+      }
+      button.destructive-action {
+        border-radius: 10px;
+        background: alpha(${c.base08}, 0.18);
+        color: ${c.base08};
+      }
+    '';
+
+  # En una instalación nueva, ReGreet arranca con Niri ya elegido para peppi
+  systemd.tmpfiles.rules = [
+    ''f /var/lib/regreet/state.toml 0644 greeter greeter - last_user = "peppi"\n[user_to_last_sess]\npeppi = "Niri"\n''
+  ];
 
   # Agente polkit (diálogos de contraseña para apps gráficas)
   security.soteria.enable = true;

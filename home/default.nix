@@ -22,11 +22,23 @@
 
   programs.fuzzel = {
     enable = true;
-    settings.main = {
-      terminal = "foot";
-      layer = "overlay";
-      width = 40;
-      lines = 12;
+    settings = {
+      main = {
+        terminal = "foot";
+        layer = "overlay";
+        prompt = "\"󰍉  \"";
+        icon-theme = "Papirus-Dark";
+        width = 38;
+        lines = 10;
+        horizontal-pad = 20;
+        vertical-pad = 14;
+        inner-pad = 8;
+        line-height = 22;
+      };
+      border = {
+        width = 2;
+        radius = 14;
+      };
     };
   };
 

@@ -44,6 +44,16 @@ in
       size = 24;
     };
 
-    opacity.terminal = 0.95;
+    opacity = {
+      terminal = 0.95;
+      popups = 0.85; # fuzzel, notificaciones
+    };
+
+    icons = {
+      enable = true;
+      package = pkgs.papirus-icon-theme;
+      dark = "Papirus-Dark";
+      light = "Papirus-Light";
+    };
   };
 }

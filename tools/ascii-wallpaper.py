@@ -31,6 +31,7 @@ def main():
     ap.add_argument("--font-size", type=int, default=11)
     # Recorte del original (x0,y0,x1,y1) en fracciones: banda de las manos
     ap.add_argument("--crop", default="0,0.20,1,0.62")
+    ap.add_argument("--center-y", type=float, default=0.5, help="centro vertical de la figura (0-1)")
     ap.add_argument("--threshold", type=int, default=16)
     ap.add_argument("--scale", type=float, default=0.86, help="ancho de la figura respecto a la pantalla")
     args = ap.parse_args()
@@ -79,7 +80,7 @@ def main():
     canvas = Image.new("RGB", (W, H), hex_rgb(args.bg))
     draw = ImageDraw.Draw(canvas)
     ox = (W - cols * cw) // 2
-    oy = (H - rows * ch) // 2
+    oy = int(H * args.center_y - rows * ch / 2)
     fg = hex_rgb(args.fg)
     n = len(RAMP) - 1
     for y in range(rows):
