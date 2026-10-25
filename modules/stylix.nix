@@ -10,6 +10,9 @@ in
     base16Scheme = "${pkgs.base16-schemes}/share/themes/${scheme}.yaml";
     polarity = "dark";
 
+    # La creación de Adán (Miguel Ángel, dominio público) en ASCII; generado con tools/ascii-wallpaper.py
+    image = ../wallpapers/creacion-adan-ascii.png;
+
     fonts = {
       monospace = {
         package = pkgs.nerd-fonts.jetbrains-mono;

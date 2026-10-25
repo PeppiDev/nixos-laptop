@@ -18,6 +18,20 @@ in
 {
   home.packages = with pkgs; [ libnotify ];
 
+  # Fondo de pantalla (la imagen la define Stylix)
+  systemd.user.services.swaybg = {
+    Unit = {
+      Description = "Fondo de pantalla";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.swaybg}/bin/swaybg -m fill -i ${config.stylix.image}";
+      Restart = "on-failure";
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
   xdg.configFile."niri/config.kdl".text = ''
     input {
         keyboard {
