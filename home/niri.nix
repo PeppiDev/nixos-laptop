@@ -89,6 +89,7 @@ in
         Mod+B hotkey-overlay-title="Navegador" { spawn "brave"; }
         Mod+E hotkey-overlay-title="Archivos" { spawn "nautilus"; }
         Super+Alt+L hotkey-overlay-title="Bloquear" { spawn "hyprlock"; }
+        Mod+T hotkey-overlay-title="Cambiar tema" { spawn "tema"; }
         Mod+P hotkey-overlay-title="Perfil de energía" { spawn "${cyclePower}"; }
 
         XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "5%+"; }

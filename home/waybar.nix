@@ -41,6 +41,7 @@ in
       modules-left = [ "custom/launcher" "niri/workspaces" "niri/window" ];
       modules-center = [ "clock" ];
       modules-right = [
+        "custom/tema"
         "cpu"
         "memory"
         "tray"
@@ -163,6 +164,12 @@ in
         tooltip-format = "{timeTo}";
       };
 
+      "custom/tema" = {
+        format = "󰏘";
+        tooltip-format = "Cambiar tema";
+        on-click = "tema";
+      };
+
       "custom/power" = {
         format = "󰐥";
         tooltip = false;
@@ -186,7 +193,7 @@ in
       .modules-left,
       .modules-center,
       .modules-right {
-        background: alpha(${c.base00}, 0.88);
+        background: alpha(${c.base00}, ${toString config.stylix.opacity.desktop});
         border: 1px solid ${c.base02};
         border-radius: 10px;
         padding: 0 4px;
@@ -228,6 +235,7 @@ in
         padding: 0 8px;
       }
 
+      #custom-tema { color: ${c.base0E}; padding: 0 8px; }
       #cpu { color: ${c.base0C}; }
       #memory { color: ${c.base0E}; }
       #power-profiles-daemon { color: ${c.base0B}; }

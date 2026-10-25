@@ -10,9 +10,12 @@
     ../../modules/desktop.nix
     ../../modules/apps.nix
     ../../modules/stylix.nix
+    ../../modules/tema-cli.nix
   ];
 
   networking.hostName = "nixos-vm";
+
+  tema.flake = "/home/peppi/nixos-config#vm";
 
   boot.initrd.luks.devices."cryptroot".allowDiscards = true;
 

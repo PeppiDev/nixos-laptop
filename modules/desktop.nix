@@ -4,45 +4,91 @@
 {
   programs.niri.enable = true;
 
-  # Pantalla de login gráfica sobre greetd; Stylix la tematiza
+  # Pantalla de login gráfica sobre greetd; Stylix la tematiza y el fondo lo pone modules/stylix.nix
   programs.regreet = {
     enable = true;
-    settings = {
-      appearance.greeting_msg = "Hola, peppi";
-      # Misma pintura pero con las manos arriba, para que la tarjeta no tape los dedos
-      background.path = lib.mkForce ../wallpapers/creacion-adan-ascii-login.png;
-      # Numérico: el greeter no corre con locale español
-      widget.clock = {
-        format = "%H:%M   ·   %d/%m/%Y";
-        label_width = 320;
-      };
-    };
+    settings.appearance.greeting_msg = "Hola, peppi";
   };
 
-  # Tarjeta de login translúcida sobre el fondo ASCII (se suma al CSS de Stylix)
+  # Estilo propio encima del CSS de Stylix. Estructura de ReGreet 0.3:
+  # overlay > [picture, frame (login), frame (reloj), box > [frame > infobar (errores), box > botones]]
   stylix.targets.regreet.extraCss =
     let
       c = config.lib.stylix.colors.withHashtag;
+      op = toString config.stylix.opacity.desktop;
     in
     ''
-      window frame {
-        background-color: alpha(${c.base00}, 0.80);
-        border: 1px solid ${c.base02};
-        border-radius: 18px;
-        padding: 18px;
+      /* Tarjeta de login */
+      overlay > frame.background:nth-child(2) {
+        background-color: alpha(${c.base00}, ${op});
+        border: 1px solid alpha(${c.base05}, 0.12);
+        border-radius: 22px;
+        padding: 22px 26px;
+        box-shadow: 0 14px 40px alpha(#000000, 0.45);
       }
-      entry, dropdown button, combobox button {
-        border-radius: 10px;
+      entry, combobox button, dropdown button {
+        border-radius: 12px;
+        min-height: 40px;
+      }
+
+      /* El reloj de ReGreet ignora el formato y sale en inglés: oculto */
+      overlay > frame.background:nth-child(3) {
+        opacity: 0;
+      }
+
+      /* Marco de errores: invisible; el aviso rojo aparece solo si hay error */
+      overlay > box > frame {
+        background: none;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+      }
+
+      /* Botones con íconos en vez de texto */
+      overlay > box > box > button,
+      button.suggested-action,
+      frame.background > grid > box > button:not(.suggested-action) {
+        min-width: 46px;
+        min-height: 46px;
+        padding: 0;
+        border-radius: 999px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 20px;
+      }
+      overlay > box > box > button label,
+      button.suggested-action label,
+      frame.background > grid > box > button:not(.suggested-action) label {
+        color: transparent;
+        font-size: 1px;
+      }
+      overlay > box > box {
+        margin-bottom: 26px;
+      }
+      overlay > box > box > button {
+        margin: 0 8px;
+        color: ${c.base05};
+        background-color: alpha(${c.base00}, ${op});
+        border: 1px solid alpha(${c.base05}, 0.12);
+      }
+      overlay > box > box > button:hover {
+        color: ${c.base08};
+        background-color: alpha(${c.base08}, 0.18);
+      }
+      overlay > box > box > button:first-child {
+        background-image: -gtk-icontheme("system-reboot-symbolic");
+      }
+      overlay > box > box > button:last-child {
+        background-image: -gtk-icontheme("system-shutdown-symbolic");
       }
       button.suggested-action {
-        border-radius: 10px;
-        background: ${c.base0D};
         color: ${c.base00};
+        background-color: ${c.base0D};
+        background-image: -gtk-icontheme("go-next-symbolic");
       }
-      button.destructive-action {
-        border-radius: 10px;
-        background: alpha(${c.base08}, 0.18);
-        color: ${c.base08};
+      frame.background > grid > box > button:not(.suggested-action) {
+        color: ${c.base05};
+        background-image: -gtk-icontheme("go-previous-symbolic");
       }
     '';
 

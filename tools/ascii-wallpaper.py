@@ -7,6 +7,7 @@ la figura con caracteres claros sobre fondo oscuro.
 Uso: ascii-wallpaper.py <imagen> <salida.png> [--size 1920x1080] [--fg #rrggbb] [--bg #rrggbb]
 """
 import argparse
+import colorsys
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
@@ -32,6 +33,7 @@ def main():
     # Recorte del original (x0,y0,x1,y1) en fracciones: banda de las manos
     ap.add_argument("--crop", default="0,0.20,1,0.62")
     ap.add_argument("--center-y", type=float, default=0.5, help="centro vertical de la figura (0-1)")
+    ap.add_argument("--colorize", action="store_true", help="colorea cada carácter con el tono original de la pintura")
     ap.add_argument("--threshold", type=int, default=16)
     ap.add_argument("--scale", type=float, default=0.86, help="ancho de la figura respecto a la pantalla")
     args = ap.parse_args()
@@ -83,6 +85,7 @@ def main():
     oy = int(H * args.center_y - rows * ch / 2)
     fg = hex_rgb(args.fg)
     n = len(RAMP) - 1
+    src = small.load()
     for y in range(rows):
         line = []
         for x in range(cols):
@@ -91,8 +94,14 @@ def main():
                 continue
             t = 1 - (lp[x, y] - lo) / max(1, hi - lo)
             t = 0.12 + 0.88 * max(0.0, min(1.0, t))
-            line.append(RAMP[int(t * n)])
-        draw.text((ox, oy + y * ch), "".join(line), font=font, fill=fg)
+            ch_ = RAMP[int(t * n)]
+            if args.colorize:
+                h, sat, v = colorsys.rgb_to_hsv(*(c / 255 for c in src[x, y]))
+                col = tuple(int(c * 255) for c in colorsys.hsv_to_rgb(h, min(1.0, sat * 1.35), 0.62 + 0.38 * v))
+                draw.text((ox + x * cw, oy + y * ch), ch_, font=font, fill=col)
+            line.append(ch_)
+        if not args.colorize:
+            draw.text((ox, oy + y * ch), "".join(line), font=font, fill=fg)
 
     canvas.save(args.out, optimize=True)
     print(f"{args.out}: {W}x{H}, {cols}x{rows} caracteres")
