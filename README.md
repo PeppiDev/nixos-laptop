@@ -85,7 +85,8 @@ mount -o umask=0077 /dev/nvme0n1p1 /mnt/efi          # ← la ESP de Windows que
 
 ```bash
 mkdir -p /mnt/home/peppi
-git clone <URL-del-repo> /mnt/home/peppi/nixos-config
+# El repo es privado: iniciar sesión en GitHub con un código (confírmalo desde el celular)
+nix-shell -p gh --run 'gh auth login --web && gh repo clone PeppiDev/nixos-laptop /mnt/home/peppi/nixos-config'
 # Alternativa sin internet: copiar la carpeta desde un segundo USB.
 cd /mnt/home/peppi/nixos-config
 
