@@ -35,12 +35,12 @@ def main():
     ap.add_argument("--center-y", type=float, default=0.5, help="centro vertical de la figura (0-1)")
     ap.add_argument("--colorize", action="store_true", help="colorea cada carácter con el tono original de la pintura")
     ap.add_argument("--threshold", type=int, default=16)
-    ap.add_argument("--scale", type=float, default=0.86, help="ancho de la figura respecto a la pantalla")
+    ap.add_argument("--scale", type=float, default=1.0, help="ancho de la figura respecto a la pantalla (1.0 = de borde a borde)")
     args = ap.parse_args()
 
     W, H = map(int, args.size.split("x"))
     font = ImageFont.truetype(FONT, args.font_size)
-    cw = font.getbbox("M")[2]
+    cw = font.getlength("M")  # avance real del carácter (no el ancho del glifo)
     ch = int(args.font_size * 1.32)
 
     img = Image.open(args.src).convert("RGB")
@@ -81,7 +81,9 @@ def main():
 
     canvas = Image.new("RGB", (W, H), hex_rgb(args.bg))
     draw = ImageDraw.Draw(canvas)
-    ox = (W - cols * cw) // 2
+    # Centrar según las columnas que realmente tienen figura, no la grilla entera
+    usadas = [x for x in range(cols) if any(mp[x, y] >= 100 for y in range(rows))] or [0, cols - 1]
+    ox = (W - (usadas[-1] - usadas[0] + 1) * cw) / 2 - usadas[0] * cw
     oy = int(H * args.center_y - rows * ch / 2)
     fg = hex_rgb(args.fg)
     n = len(RAMP) - 1
