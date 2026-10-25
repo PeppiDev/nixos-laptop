@@ -5,6 +5,7 @@
   imports = [
     ./niri.nix
     ./waybar.nix
+    ./terminal.nix
   ];
 
   home.username = "peppi";

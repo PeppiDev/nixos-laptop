@@ -41,6 +41,11 @@ let
     # Tonos tierra/ocre como el fresco original
     fresco = {
       scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
+      # Acentos cálidos en vez del verde azulado de Gruvbox
+      ajustes = {
+        base0D = "d79921"; # ocre (acento principal)
+        base0C = "d65d0e"; # terracota
+      };
       opacidad = { terminal = 0.93; popups = 0.85; desktop = 0.85; };
     };
   };
@@ -68,6 +73,7 @@ in
     stylix = {
       enable = true;
       base16Scheme = t.scheme;
+      override = t.ajustes or { };
       polarity = "dark";
 
       # La creación de Adán (Miguel Ángel, dominio público) en ASCII; generado con tools/ascii-wallpaper.py
