@@ -7,6 +7,7 @@
     obsidian
     moonlight-qt
     fastfetch
+    claude-code   # sin auto-actualización: se actualiza con `actualizar`
   ];
 
   services.tailscale.enable = true;
